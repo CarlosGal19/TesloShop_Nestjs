@@ -1,0 +1,14 @@
+services:
+  teslo_shop_pg_db:
+    image: postgres:18.1
+    container_name: pg_teslo_shop
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - 5432:5432
+    volumes:
+      - teslo-shop-data:/data/db
+
+volumes:
+  teslo-shop-data:
