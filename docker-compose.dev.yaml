@@ -8,7 +8,4 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - teslo-shop-data:/data/db
-
-volumes:
-  teslo-shop-data:
+      - ./postgres:/var/lib/postgresql
