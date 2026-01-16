@@ -10,7 +10,7 @@ export class Product {
   })
   title: string;
 
-  @Column('int2', {
+  @Column('float', {
     nullable: false,
   })
   price: number;
