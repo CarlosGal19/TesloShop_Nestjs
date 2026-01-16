@@ -24,7 +24,7 @@ export class Product {
     nullable: false,
     unique: true,
   })
-  slug: number;
+  slug: string;
 
   @Column('int2', {
     nullable: false,
