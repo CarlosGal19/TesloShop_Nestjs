@@ -36,7 +36,7 @@ export class Product {
     array: true,
     nullable: true,
   })
-  sizes?: string[];
+  sizes: string[];
 
   @Column('text', {
     nullable: false,

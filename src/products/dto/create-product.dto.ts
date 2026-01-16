@@ -1,5 +1,6 @@
 import {
   IsArray,
+  IsInt,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -25,14 +26,14 @@ export class CreateProductDto {
   @IsString()
   slug: string;
 
-  @IsNumber()
+  @IsInt()
   @Min(0)
   @IsOptional()
   @IsPositive()
   stock?: number;
 
   @IsArray()
-  @IsOptional()
+  @IsString({ each: true })
   sizes: string[];
 
   @IsString()
