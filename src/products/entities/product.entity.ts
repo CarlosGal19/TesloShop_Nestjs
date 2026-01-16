@@ -1,0 +1,46 @@
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class Product {
+  @PrimaryGeneratedColumn('uuid')
+  product_id: string;
+
+  @Column('text', {
+    unique: true,
+  })
+  title: string;
+
+  @Column('int2', {
+    nullable: false,
+    default: 0,
+  })
+  price: number;
+
+  @Column('text', {
+    nullable: true,
+  })
+  description?: string;
+
+  @Column('text', {
+    nullable: false,
+    unique: true,
+  })
+  slug: number;
+
+  @Column('int2', {
+    nullable: false,
+    default: 0,
+  })
+  stock: number;
+
+  @Column('text', {
+    array: true,
+    nullable: true,
+  })
+  sizes: string[];
+
+  @Column('text', {
+    nullable: false,
+  })
+  gender: string;
+}
