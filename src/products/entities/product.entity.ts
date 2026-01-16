@@ -12,7 +12,6 @@ export class Product {
 
   @Column('int2', {
     nullable: false,
-    default: 0,
   })
   price: number;
 
@@ -37,7 +36,7 @@ export class Product {
     array: true,
     nullable: true,
   })
-  sizes: string[];
+  sizes?: string[];
 
   @Column('text', {
     nullable: false,
