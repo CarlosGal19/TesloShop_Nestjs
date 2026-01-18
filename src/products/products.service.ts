@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { responseConfig } from '../common/global/response.config';
 import { isUUID } from 'class-validator';
+import { ProductImages } from './entities';
 
 @Injectable()
 export class ProductsService {
@@ -21,11 +22,21 @@ export class ProductsService {
     // REPOSITORY PATTERN
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+
+    @InjectRepository(ProductImages)
+    private readonly productImagesRepository: Repository<ProductImages>,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
     try {
-      const product = this.productRepository.create(createProductDto);
+      const { images = [], ...productDetails } = createProductDto;
+
+      const product = this.productRepository.create({
+        ...productDetails,
+        images: images.map((image) =>
+          this.productImagesRepository.create({ url: image }),
+        ),
+      });
       await this.productRepository.save(product);
       const dataToReturn = {
         id: product.product_id,
@@ -62,7 +73,6 @@ export class ProductsService {
     let product: Product | null;
 
     if (isUUID(term)) {
-      console.log('id');
       product = await this.productRepository.findOne({
         where: { product_id: term },
         select: [
@@ -102,6 +112,7 @@ export class ProductsService {
     const product = await this.productRepository.preload({
       product_id: id,
       ...updateProductDto,
+      images: [],
     });
 
     if (!product) {
