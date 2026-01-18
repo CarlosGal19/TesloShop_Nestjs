@@ -1,3 +1,4 @@
+import { IsIn } from 'class-validator';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -44,9 +45,7 @@ export class Product {
   })
   sizes: string[];
 
-  @Column('text', {
-    nullable: false,
-  })
+  @IsIn(['men', 'women', 'kids', 'unisex'])
   gender: string;
 
   @Column('text', {
