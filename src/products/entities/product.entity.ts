@@ -1,4 +1,4 @@
-import { IsIn } from 'class-validator';
+import { IsArray, IsIn, IsOptional } from 'class-validator';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -53,6 +53,8 @@ export class Product {
     nullable: false,
     default: [],
   })
+  @IsArray()
+  @IsOptional()
   tags: string[];
 
   @BeforeInsert()
