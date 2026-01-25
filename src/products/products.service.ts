@@ -61,9 +61,21 @@ export class ProductsService {
           slug: true,
           tags: true,
         },
+        relations: {
+          images: true,
+        },
       });
 
-      return responseConfig({ products, take: limit, skip: offset });
+      const transformedProducts = products.map((product) => ({
+        ...product,
+        images: product.images?.map((image) => image.url),
+      }));
+
+      return responseConfig({
+        products: transformedProducts,
+        take: limit,
+        skip: offset,
+      });
     } catch (error) {
       this.handleExceptions(error);
     }
