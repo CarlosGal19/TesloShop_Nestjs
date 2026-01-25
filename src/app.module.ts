@@ -5,6 +5,7 @@ import { envConfiguration } from './common/config/env.config';
 import { ZodEnvSchema } from './common/config/env.validation';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ProductsModule } from './products/products.module';
       synchronize: process.env.NODE_ENV === 'dev',
     }),
     ProductsModule,
+    SeedModule,
   ],
   controllers: [],
   providers: [],
