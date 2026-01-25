@@ -66,10 +66,7 @@ export class ProductsService {
         },
       });
 
-      const transformedProducts = products.map((product) => ({
-        ...product,
-        images: product.images?.map((image) => image.url),
-      }));
+      const transformedProducts = this.flatImages(products);
 
       return responseConfig({
         products: transformedProducts,
@@ -96,11 +93,15 @@ export class ProductsService {
           'slug',
           'tags',
         ],
+        relations: {
+          images: true,
+        },
       });
     } else {
       const queryBuilder = this.productRepository.createQueryBuilder('product');
       product = await queryBuilder
         .where('product.title = :term OR product.slug = :term', { term })
+        .leftJoin('product.images', 'productImages')
         .select([
           'product.product_id',
           'product.title',
@@ -109,6 +110,7 @@ export class ProductsService {
           'product.stock',
           'product.slug',
           'product.tags',
+          'productImages',
         ])
         .getOne();
     }
@@ -117,7 +119,12 @@ export class ProductsService {
       throw new NotFoundException('The product does not exist');
     }
 
-    return responseConfig({ product });
+    const transformedProduct = this.flatImages(product);
+    if (Array.isArray(transformedProduct)) {
+      throw new InternalServerErrorException();
+    }
+
+    return responseConfig({ product: transformedProduct });
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
@@ -160,6 +167,22 @@ export class ProductsService {
     } catch (error) {
       this.handleExceptions(error);
     }
+  }
+
+  private flatImages(products: Product[] | Product) {
+    if (Array.isArray(products)) {
+      return products.map((product) => ({
+        ...product,
+        images: product.images?.map((image) => image.url),
+      }));
+    }
+    if (products instanceof Product) {
+      return {
+        ...products,
+        images: products.images?.map((image) => image.url),
+      };
+    }
+    throw new InternalServerErrorException();
   }
 
   private handleExceptions(error: any) {
