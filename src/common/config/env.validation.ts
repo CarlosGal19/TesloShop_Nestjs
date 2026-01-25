@@ -6,4 +6,5 @@ export const ZodEnvSchema = z.object({
   DB_PORT: z.coerce.number(),
   DB_USERNAME: z.string().trim(),
   DB_NAME: z.string().trim(),
+  NODE_ENV: z.string().trim(),
 });

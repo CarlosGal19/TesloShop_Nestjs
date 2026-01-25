@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -13,6 +14,7 @@ import { Product } from './entities/product.entity';
 import { responseConfig } from '../common/global/response.config';
 import { isUUID } from 'class-validator';
 import { ProductImages } from './entities';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProductsService {
@@ -27,6 +29,8 @@ export class ProductsService {
     private readonly productImagesRepository: Repository<ProductImages>,
 
     private readonly dataSource: DataSource,
+
+    private readonly configService: ConfigService,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
@@ -223,5 +227,22 @@ export class ProductsService {
     throw new InternalServerErrorException(
       'Unexpected error: check server logs',
     );
+  }
+
+  async deleteAllProducts() {
+    if (this.configService.get<string>('environment') === 'prod') {
+      throw new UnauthorizedException(
+        'This action cannot be executed in production environment',
+      );
+    }
+
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
+
+    try {
+      await queryBuilder.delete().where({}).execute();
+      return true;
+    } catch (error) {
+      this.handleExceptions(error);
+    }
   }
 }

@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { CommonModule } from './common/common.module';
-// import { envConfiguration } from './common/config/env.config';
-// import { ZodEnvSchema } from './common/config/env.validation';
+import { envConfiguration } from './common/config/env.config';
+import { ZodEnvSchema } from './common/config/env.validation';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      // load: [envConfiguration],
-      // validate: (config) => {
-      //   return ZodEnvSchema.parse(config);
-      // },
+      load: [envConfiguration],
+      validate: (config) => {
+        return ZodEnvSchema.parse(config);
+      },
     }),
     CommonModule,
     TypeOrmModule.forRoot({
