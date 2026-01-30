@@ -7,4 +7,5 @@ export const ZodEnvSchema = z.object({
   DB_USERNAME: z.string().trim(),
   DB_NAME: z.string().trim(),
   NODE_ENV: z.string().trim(),
+  HOST_API: z.string().trim(),
 });

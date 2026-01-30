@@ -7,14 +7,14 @@ import { responseConfig } from '../common/global/response.config';
 import { isUUID } from 'class-validator';
 import { join } from 'path';
 import { existsSync } from 'fs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FilesService {
+  constructor(private readonly configService: ConfigService) {}
   public uploadFile(file: Express.Multer.File) {
-    return responseConfig(
-      { file: file.filename },
-      'Image was saved successfully',
-    );
+    const imageUrl = `${this.configService.getOrThrow('host_url')}/files/product/${file.filename}`;
+    return responseConfig({ file: imageUrl }, 'Image was saved successfully');
   }
 
   getImage(imageName: string) {
