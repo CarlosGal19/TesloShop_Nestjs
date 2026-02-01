@@ -24,7 +24,7 @@ export class UserRoleGuard implements CanActivate {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const userRoles: string[] = context.switchToHttp().getRequest().user.roles;
 
-    const isAllowed = !userRoles.some((role) => !validRoles.includes(role));
+    const isAllowed = userRoles.some((role) => validRoles.includes(role));
     if (!isAllowed) {
       throw new ForbiddenException();
     }
