@@ -10,9 +10,12 @@ import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 // import { UpdateAuthDto } from './dto/update-auth.dto';
 import { LoginDTO } from './dto/login.dto';
-import { GetUser } from './decorators/get-user.decorator';
-import { User } from './entities/user.entity';
+// import { GetUser } from './decorators/get-user.decorator';
+// import { User } from './entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { UserRoleGuard } from './guards/user-role.guard';
+import { UserRole } from './decorators/user-role.decorator';
+import { ValidRoles } from './interfaces/valid-roles.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -28,10 +31,19 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
-  @Get('test')
-  @UseGuards(AuthGuard())
-  testingAuth(@GetUser('email') user: User) {
-    console.log(user);
+  // @Get('test')
+  // @UseGuards(AuthGuard())
+  // testingAuth(@GetUser('email') user: User) {
+  //   console.log(user);
+  //   return {
+  //     message: 'Hello',
+  //   };
+  // }
+
+  @Get('test2')
+  @UserRole(ValidRoles.admin, ValidRoles.user)
+  @UseGuards(AuthGuard(), UserRoleGuard)
+  testingGuard() {
     return {
       message: 'Hello',
     };
