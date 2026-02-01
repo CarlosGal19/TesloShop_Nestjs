@@ -78,6 +78,13 @@ export class AuthService {
     return responseConfig({ token: accessToken }, 'Logged in');
   }
 
+  async checkAuthStatus(user: User) {
+    const newAccessToken = await this.jwtService.signAsync({
+      user,
+    });
+    return responseConfig({ user, token: newAccessToken });
+  }
+
   // update(id: number, updateAuthDto: UpdateAuthDto) {
   // return updateAuthDto;
   // }

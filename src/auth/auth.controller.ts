@@ -4,6 +4,7 @@ import {
   Body,
   Get,
   UseGuards,
+  Request,
   // Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -17,6 +18,8 @@ import { UserRoleGuard } from './guards/user-role.guard';
 import { UserRole } from './decorators/user-role.decorator';
 import { ValidRoles } from './interfaces/valid-roles.interface';
 import { Auth } from './decorators/auth.decorator';
+import { GetUser } from './decorators/get-user.decorator';
+import { User } from './entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -56,6 +59,12 @@ export class AuthController {
     return {
       message: 'Hello',
     };
+  }
+
+  @Get('auth-status')
+  @Auth()
+  checkAuthStatus(@GetUser() user: User) {
+    return this.authService.checkAuthStatus(user);
   }
 
   // @Patch(':id')
