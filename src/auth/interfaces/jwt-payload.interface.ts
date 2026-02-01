@@ -1,7 +1,7 @@
 enum Role {
   USER = 'user',
   ADMIN = 'admin',
-  SUPERADMIN = 'superadmin',
+  SUPERADMIN = 'super',
 }
 
 export interface IJwtPayload {

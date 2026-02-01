@@ -40,7 +40,7 @@ export class User {
   })
   is_active: boolean;
 
-  @IsIn(['user', 'admin', 'superuser'])
+  @IsIn(['user', 'admin', 'super'])
   @Column('text', {
     array: true,
     nullable: false,
