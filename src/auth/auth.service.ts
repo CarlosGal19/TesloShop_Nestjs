@@ -69,7 +69,12 @@ export class AuthService {
       throw new BadRequestException('Invalid email or password');
     }
 
-    const accessToken = await this.jwtService.signAsync({ user });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userWithoutPassword } = user;
+
+    const accessToken = await this.jwtService.signAsync({
+      user: userWithoutPassword,
+    });
     return responseConfig({ token: accessToken }, 'Logged in');
   }
 
