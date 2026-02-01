@@ -4,10 +4,12 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ProductImages } from './productImages.entity';
+import { User } from '../../auth/entities/user.entity';
 
 @Entity()
 export class Product {
@@ -64,6 +66,12 @@ export class Product {
     eager: true,
   })
   images?: ProductImages[];
+
+  @ManyToOne(() => User, (user) => user.products, {
+    onDelete: 'NO ACTION',
+    eager: true,
+  })
+  user: User;
 
   @BeforeInsert()
   setSlug() {

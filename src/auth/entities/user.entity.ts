@@ -1,5 +1,12 @@
 import { IsIn } from 'class-validator';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Product } from '../../products/entities';
 
 @Entity()
 export class User {
@@ -40,6 +47,9 @@ export class User {
     default: ['user'],
   })
   roles: string[];
+
+  @OneToMany(() => Product, (product) => product.user)
+  products?: Product[];
 
   @BeforeInsert()
   trimEmail() {
