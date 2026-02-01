@@ -7,6 +7,7 @@ export const GetUser = createParamDecorator(
     const request = ctx.switchToHttp().getRequest();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const user: User = request.user;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
     return !data ? user : user[data];
   },
 );
