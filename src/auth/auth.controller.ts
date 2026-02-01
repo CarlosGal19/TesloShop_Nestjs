@@ -16,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserRoleGuard } from './guards/user-role.guard';
 import { UserRole } from './decorators/user-role.decorator';
 import { ValidRoles } from './interfaces/valid-roles.interface';
+import { Auth } from './decorators/auth.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -42,8 +43,16 @@ export class AuthController {
 
   @Get('test2')
   @UserRole(ValidRoles.admin, ValidRoles.user) // Add roles to metadata
-  @UseGuards(AuthGuard(), UserRoleGuard) // Set user to requests and validates user's roles
+  @UseGuards(AuthGuard(), UserRoleGuard) // Set user to request and validates user's roles (Auth guard is authentication and User Role guard is authorization)
   testingGuard() {
+    return {
+      message: 'Hello',
+    };
+  }
+
+  @Get('test3')
+  @Auth(ValidRoles.admin) // Auth decorator isolates logic of both decorators (UserRole decorator and guards)
+  testingDecoratorComposition() {
     return {
       message: 'Hello',
     };
