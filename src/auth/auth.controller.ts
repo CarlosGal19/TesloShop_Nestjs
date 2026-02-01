@@ -41,8 +41,8 @@ export class AuthController {
   // }
 
   @Get('test2')
-  @UserRole(ValidRoles.admin, ValidRoles.user)
-  @UseGuards(AuthGuard(), UserRoleGuard)
+  @UserRole(ValidRoles.admin, ValidRoles.user) // Add roles to metadata
+  @UseGuards(AuthGuard(), UserRoleGuard) // Set user to requests and validates user's roles
   testingGuard() {
     return {
       message: 'Hello',
