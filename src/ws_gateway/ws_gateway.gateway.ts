@@ -8,6 +8,8 @@ import {
 import { WsGatewayService } from './ws_gateway.service';
 import { Server, Socket } from 'socket.io';
 import { NewMessageDto } from './dto/new-message.dto';
+import { JwtService } from '@nestjs/jwt';
+import { IJwtPayload } from '../auth/interfaces/jwt-payload.interface';
 
 @WebSocketGateway({ cors: true, namespace: '/ws' }) // Required interfaces for handle connection and disconnect
 export class WsGatewayGateway
@@ -16,14 +18,31 @@ export class WsGatewayGateway
   @WebSocketServer()
   wss!: Server;
 
-  constructor(private readonly wsGatewayService: WsGatewayService) {}
+  constructor(
+    private readonly wsGatewayService: WsGatewayService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  handleConnection(client: Socket) {
-    this.wsGatewayService.registerClient(client);
-    this.wss.emit(
-      'clients-updated',
-      this.wsGatewayService.getConnectedClients(),
-    );
+  async handleConnection(client: Socket) {
+    const token = client.handshake.headers.authentication as string;
+    let payload: IJwtPayload;
+
+    try {
+      payload = this.jwtService.verify(token);
+      await this.wsGatewayService.registerClient(client, payload.user.user_id);
+    } catch (error) {
+      console.log(error);
+      client.disconnect();
+      return;
+    }
+
+    // console.log({ payload })
+    // console.log('Cliente conectado:', client.id );
+
+    // this.wss.emit(
+    //   'clients-updated',
+    //   this.messagesWsService.getConnectedClients(),
+    // );
   }
 
   handleDisconnect(client: Socket) {
@@ -36,7 +55,12 @@ export class WsGatewayGateway
 
   @SubscribeMessage('message-from-client')
   catchClientMessage(client: Socket, payload: NewMessageDto) {
-    console.log(client);
-    console.log(payload);
+    // emit message-from-server -- payload: { fullName: string, message: string }
+    this.wss.emit('message-from-server', {
+      fullName: this.wsGatewayService.getUserFullName(client.id),
+      message: payload.message ?? 'no message',
+    });
+    // If you use client.emit the message will be received just for the user that emitted it
+    // client.broadcast emit a message for everyone except the client
   }
 }
