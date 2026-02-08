@@ -1,25 +1,42 @@
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
+  SubscribeMessage,
   WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { WsGatewayService } from './ws_gateway.service';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
+import { NewMessageDto } from './dto/new-message.dto';
 
-@WebSocketGateway({ cors: true, transports: ['websocket'], namespace: 'ws' }) // Required interfaces for handle connection and disconnect
+@WebSocketGateway({ cors: true, namespace: '/ws' }) // Required interfaces for handle connection and disconnect
 export class WsGatewayGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
+  @WebSocketServer()
+  wss!: Server;
+
   constructor(private readonly wsGatewayService: WsGatewayService) {}
 
-  handleConnection(client: Socket, ...args: any[]) {
-    console.log(args);
-    console.log(client.id);
-    return;
+  handleConnection(client: Socket) {
+    this.wsGatewayService.registerClient(client);
+    this.wss.emit(
+      'clients-updated',
+      this.wsGatewayService.getConnectedClients(),
+    );
   }
 
   handleDisconnect(client: Socket) {
-    console.log(client.id);
-    return;
+    this.wsGatewayService.removeClient(client.id);
+    this.wss.emit(
+      'clients-updated',
+      this.wsGatewayService.getConnectedClients(),
+    );
+  }
+
+  @SubscribeMessage('message-from-client')
+  catchClientMessage(client: Socket, payload: NewMessageDto) {
+    console.log(client);
+    console.log(payload);
   }
 }
