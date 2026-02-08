@@ -22,6 +22,7 @@ import { WsGatewayModule } from './ws_gateway/ws_gateway.module';
     }),
     CommonModule,
     TypeOrmModule.forRoot({
+      ssl: process.env.NODE_ENV === 'prod', // It allows db connection on production
       type: 'postgres',
       host: process.env.DB_HOST,
       port: +(process.env.DB_PORT || ''),
