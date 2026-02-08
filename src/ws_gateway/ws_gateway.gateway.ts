@@ -60,7 +60,8 @@ export class WsGatewayGateway
       fullName: this.wsGatewayService.getUserFullName(client.id),
       message: payload.message ?? 'no message',
     });
-    // If you use client.emit the message will be received just for the user that emitted it
-    // client.broadcast emit a message for everyone except the client
+    // If you use client.emits the message will be received just for the user that emitted it
+    // client.broadcast emits a message for everyone except the client
+    // client.join joins a client to a room
   }
 }
